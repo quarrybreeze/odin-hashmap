@@ -21,12 +21,57 @@ class HashMap
     hash_code = self.hash(key)
 
     @hash[hash_code] = Node.new(value)
+
+    #adding linked list to collissions?
+    # if @hash[hash_code] == nil
+    #   
+    # else
+    #   while @hash[hash_code].next_node != nil
+    #     @hash[hash_code] = @hash[hash_code].next_node
+    #   end
+    #   @hash[hash_code].next_node = Node.new(value)
+    # end
   end
 
   def get(key)
     hash_code = self.hash(key)
+    @hash[hash_code].value
+  end
 
-    @hash[hash_code]
+  def has?(key)
+    hash_code = self.hash(key)
+    if @hash[hash_code] == nil
+      return false
+    else
+      return true
+    end
+  end
+
+  def remove(key)
+    hash_code = self.hash(key)
+    if self.has?(key)
+      value = @hash[hash_code].value
+      @hash.delete(hash_code)
+      return value
+    else
+      return nil
+    end
+  end
+
+  def length
+    @hash.length
+  end
+
+  def clear
+    @hash.clear
+  end
+
+  def keys
+    
+  end
+
+  def values
+
   end
 
 end
@@ -34,4 +79,11 @@ end
 test = HashMap.new
 
 test.set('apple', 'red')
+test.set('apple', 'blue')
 p test.get('apple')
+# p test.has?('apple')
+# p test.has?('bear')
+# p test.remove('apple')
+# p test.remove('bear')
+p test.length
+# p test.@hash
