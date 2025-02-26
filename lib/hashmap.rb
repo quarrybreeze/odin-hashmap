@@ -26,12 +26,19 @@ class HashMap
     data = [key,value]
 
     if @buckets[hash][0] == nil                     #if no head
-      @buckets[hash][0] = Node.new(data, nil)
-    elsif @buckets[hash][0].value.first == key  #if head, check the first key
-      @buckets[hash][0].value = data
+      @buckets[hash][0] = Node.new(data, nil)       #make a head
     else
-      @buckets[hash][0].next_node = Node.new(data,nil) #could probably use improvement to make longer collisions
-      # p "Collision detected #{key} and #{value}"
+      while @buckets[hash][0]                       #otherwise.
+        if @buckets[hash][0].value.first == key     #if the key matches
+          @buckets[hash][0].value = data            #update the value
+          return
+        elsif @buckets[hash][0].next_node == nil        #if no keys matched AND its the last node
+          @buckets[hash][0].next_node = Node.new(data)  #create a new node
+          return
+        else
+          @buckets[hash][0] = @buckets[hash][0].next_node #if no keys matched but there are still nodes to check, loop to next node
+        end
+      end
     end
     
     if self.length > (@load_factor.to_f*@capacity.to_i)
@@ -44,7 +51,7 @@ class HashMap
     @capacity *= 2
     entries_array = self.entries 
     self.clear           
-    entries_array.each do |entry| 
+    entries_array.each do |entry|     #rehash to minimize collisions in new bigger capacity
       self.set(entry[0], entry[1])
     end
   end
@@ -130,10 +137,10 @@ class HashMap
     keys_array = []
 
     for i in 0..(@capacity-1)
-      if @buckets[i] != nil && @buckets[i][0] != nil
+      if @buckets[i] != nil && @buckets[i][0] != nil #if a key exists
         keys_array << @buckets[i][0].value.first
         current = @buckets[i][0]
-        while current.next_node != nil
+        while current.next_node != nil  #check if there are linked nodes
           current = current.next_node
           keys_array << current.value.first
         end
@@ -146,10 +153,10 @@ class HashMap
     values_array = []
 
     for i in 0..(@capacity-1)
-      if @buckets[i] != nil && @buckets[i][0] != nil
+      if @buckets[i] != nil && @buckets[i][0] != nil #if a value exists
         values_array << @buckets[i][0].value.last
         current = @buckets[i][0]
-        while current.next_node != nil
+        while current.next_node != nil #check if there are linked nodes
           current = current.next_node
           values_array << current.value.last
         end
@@ -163,13 +170,13 @@ class HashMap
     individual_entry = []
 
     for i in 0..(@capacity-1)
-      if @buckets[i] != nil && @buckets[i][0] != nil  
+      if @buckets[i] != nil && @buckets[i][0] != nil   #if a value exists
         individual_entry << @buckets[i][0].value.first
         individual_entry << @buckets[i][0].value.last
         entries_array << individual_entry
         individual_entry = []
         current = @buckets[i][0]
-        while current.next_node != nil
+        while current.next_node != nil                  #check if there are linked nodes
           current = current.next_node
           individual_entry << current.value.first
           individual_entry << current.value.last

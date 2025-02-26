@@ -15,6 +15,8 @@ test.set('jacket', 'blue')
 test.set('kite', 'pink')
 test.set('lion', 'golden')
 
+p "added 12 items"
+
 p test.length
 
 p test.capacity
